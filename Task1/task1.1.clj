@@ -1,12 +1,12 @@
 (defn combinations 
-  ([]
+  ([num]
     (println "No args"))
-  ([x]
+  ([num x]
     (println x))
-  ([x & rest]
+  ([num x & rest]
     (println x)
-    (apply combinations rest))
+    (apply combinations num rest))
 )
     
   
-(combinations)
+(combinations 2 "f" "d" "s")
