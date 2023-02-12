@@ -6,13 +6,17 @@
   (= (getLastStrChar resStr) (nth symList idx))
 )
 
+(defn isEmpty [resStr] 
+  (= (count resStr) 0)
+)
+
 (defn combinations [resStr curPos n symList]
   (if (= n (count resStr))
       (println resStr)
       (
         if (< curPos (count symList))
            (
-              if (not (isLastCharEqual resStr symList curPos))
+              if (or (isEmpty resStr) (not (isLastCharEqual resStr symList curPos)))
                  (println "Way1")
                  (println "Way2")
            )
@@ -20,8 +24,5 @@
       )
   )
 )
-
-
-(println ( = (getLastStrChar "absfgh") "f"))
 
 (combinations "a" 0 2 `("a" "b" "c"))
