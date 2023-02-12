@@ -10,19 +10,27 @@
   (= (count resStr) 0)
 )
 
-(defn combinations [resStr curPos n symList]
+(defn rec_combinations [resStr curPos n symList]
   (if (= n (count resStr))
       (println resStr)
       (
         if (< curPos (count symList))
            (
               if (or (isEmpty resStr) (not (isLastCharEqual resStr symList curPos)))
-                 (println "Way1")
-                 (println "Way2")
+                 (
+                    do 
+                      (rec_combinations (str resStr (nth symList curPos)) 0 n symList)
+                      (rec_combinations resStr (+ curPos 1) n symList)
+                 )
+                 (rec_combinations resStr (+ curPos 1) n symList)
            )
            ()
       )
   )
 )
 
-(combinations "a" 0 2 `("a" "b" "c"))
+(defn combinations [num symList]
+  (rec_combinations "" 0 num symList)
+)
+
+(combinations 2 `("a" "b" "c"))
