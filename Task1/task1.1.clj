@@ -11,7 +11,7 @@
 )
 
 (defn rec_combinations [resStr curPos n symList]
-  (if (= n (count resStr))
+  (if (<= n (count resStr))
       (println resStr)
       (
         if (< curPos (count symList))
