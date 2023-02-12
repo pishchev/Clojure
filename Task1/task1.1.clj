@@ -1,12 +1,27 @@
-(defn combinations 
-  ([num]
-    (println "No args"))
-  ([num x]
-    (println x))
-  ([num x & rest]
-    (println x)
-    (apply combinations num rest))
+(defn getLastStrChar [resStr] 
+  (str(nth resStr (- (count resStr) 1)))
 )
-    
-  
-(combinations 2 "f" "d" "s")
+
+(defn isLastCharEqual [resStr symList idx]
+  (= (getLastStrChar resStr) (nth symList idx))
+)
+
+(defn combinations [resStr curPos n symList]
+  (if (= n (count resStr))
+      (println resStr)
+      (
+        if (< curPos (count symList))
+           (
+              if (not (isLastCharEqual resStr symList curPos))
+                 (println "Way1")
+                 (println "Way2")
+           )
+           ()
+      )
+  )
+)
+
+
+(println ( = (getLastStrChar "absfgh") "f"))
+
+(combinations "a" 0 2 `("a" "b" "c"))
