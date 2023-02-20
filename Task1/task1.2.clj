@@ -1,11 +1,18 @@
-(defn addToWord [baseStr alpList]
-  (if (> (count alpList) 0)
-    (if (= (str (last baseStr)) (first alpList))
-      (addToWord baseStr (rest alpList))
-      (concat (list (str baseStr (first alpList)))
-              (addToWord baseStr (rest alpList))        
+(defn addToWord 
+  ([baseStr alpList acc]
+    (if (> (count alpList) 0)
+      (if (= (str (last baseStr)) (first alpList))
+        (recur baseStr (rest alpList) acc)
+        (recur baseStr
+               (rest alpList)
+               (concat acc (list (str baseStr (first alpList))))
+        )       
       )
+      acc
     )
+  )
+  ([baseStr alpList]
+    (addToWord baseStr alpList `())
   )
 )
 
@@ -20,7 +27,7 @@
     )
   )
   ([restAlpList alpList]
-    (addToWordList restAlpList alpList '())
+    (addToWordList restAlpList alpList `())
   )
 )
 
@@ -39,6 +46,4 @@
   )
 )
 
-(println (combine '("a" "b" "c") 1))
-(println (combine '("a" "b" "c") 2))
-(println (combine '("a" "b" "c") 3))
+(println (combine `("a" "b" "c") 2))
