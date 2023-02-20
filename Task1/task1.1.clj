@@ -24,4 +24,4 @@
   )
 )
 
-(println (combine '("a" "b" "c") 3))
+(println (combine `("a" "b" "c") 2))
