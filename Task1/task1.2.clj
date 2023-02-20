@@ -9,11 +9,18 @@
   )
 )
 
-(defn addToWordList [restAlpList alpList]
-  (if (> (count restAlpList) 0)
-    (concat (addToWord (first restAlpList) alpList)
-            (addToWordList (rest restAlpList) alpList)
+(defn addToWordList 
+  ([restAlpList alpList acc]
+    (if (> (count restAlpList) 0)
+      (recur (rest restAlpList)
+             alpList
+             (concat acc (addToWord (first restAlpList) alpList))
+      )
+      acc
     )
+  )
+  ([restAlpList alpList]
+    (addToWordList restAlpList alpList '())
   )
 )
 
@@ -22,7 +29,7 @@
     (if (> curIterIdx 1)
       (recur alpList 
              (dec curIterIdx)
-             (addToWordList alpList acc)
+             (addToWordList acc alpList)
       )
       acc
     )
