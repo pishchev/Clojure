@@ -1,36 +1,18 @@
-(defn getLastStrChar [resStr] 
-  (str(nth resStr (- (count resStr) 1)))
-)
+(defn addToWord [baseStr alpList]
+  (if (> (count alpList) 0)
+    (if (= (str (last baseStr)) (first alpList))
+      (addToWord baseStr (rest alpList))
+      (concat (list (str baseStr (first alpList)))
+              (addToWord baseStr (rest alpList))))))
 
-(defn isLastCharEqual [resStr symList idx]
-  (= (getLastStrChar resStr) (nth symList idx))
-)
+(defn addToWordList [restAlpList alpList]
+  (if (> (count restAlpList) 0)
+    (concat (addToWord (first restAlpList) alpList)
+            (addToWordList (rest restAlpList) alpList))))
 
-(defn isEmpty [resStr] 
-  (= (count resStr) 0)
-)
+(defn combine [alpList curIterIdx]
+  (if (> curIterIdx 1)
+    (addToWordList (combine alpList (dec curIterIdx)) alpList)
+    alpList))
 
-(defn rec_combinations [resStr curPos n symList]
-  (if (<= n (count resStr))
-      (println resStr)
-      (
-        if (< curPos (count symList))
-           (
-              if (or (isEmpty resStr) (not (isLastCharEqual resStr symList curPos)))
-                 (
-                    do 
-                      (rec_combinations (str resStr (nth symList curPos)) 0 n symList)
-                      (rec_combinations resStr (+ curPos 1) n symList)
-                 )
-                 (rec_combinations resStr (+ curPos 1) n symList)
-           )
-           ()
-      )
-  )
-)
-
-(defn combinations [num symList]
-  (rec_combinations "" 0 num symList)
-)
-
-(combinations 2 `("a" "b" "c"))
+(println (combine '("a" "b" "c") 3))
