@@ -3,16 +3,25 @@
     (if (= (str (last baseStr)) (first alpList))
       (addToWord baseStr (rest alpList))
       (concat (list (str baseStr (first alpList)))
-              (addToWord baseStr (rest alpList))))))
+              (addToWord baseStr (rest alpList))        
+      )
+    )
+  )
+)
 
 (defn addToWordList [restAlpList alpList]
   (if (> (count restAlpList) 0)
     (concat (addToWord (first restAlpList) alpList)
-            (addToWordList (rest restAlpList) alpList))))
+            (addToWordList (rest restAlpList) alpList)
+    )
+  )
+)
 
 (defn combine [alpList curIterIdx]
   (if (> curIterIdx 1)
     (addToWordList (combine alpList (dec curIterIdx)) alpList)
-    alpList))
+    alpList
+  )
+)
 
 (println (combine '("a" "b" "c") 3))
