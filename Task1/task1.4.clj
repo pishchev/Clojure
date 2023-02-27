@@ -6,7 +6,7 @@
 )
 
 (defn addToWordList[restAlpList alpList]
-    (reduce concat
+    (apply concat
         (map (fn [sym] (addToWord sym alpList)) restAlpList)
     )
 )
