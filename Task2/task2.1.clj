@@ -1,5 +1,4 @@
-
-; num % denum != 0
+;проверка на некратность
 (defn notMultiple 
   ([denum, num, factor]
     (if (= num (* denum factor))
@@ -21,29 +20,34 @@
 (println (notMultiple 4 9))
 (println (notMultiple 5 9))
 (println (notMultiple 9 9))
-(println "----------Test1")
+(println "----------Test1\n")
 
-(defn filterNums [denum, nums]
+;фильтруем числа кратные знаменателю
+(defn filterMultiplesOfDenom [denum, nums]
   (filter (partial notMultiple denum) nums) 
 )
 
 (println "Test2----------")
-(println (filterNums 2 (range 1 10)))
-(println (filterNums 3 (range 1 10)))
-(println (filterNums 4 (range 1 10)))
-(println (filterNums 5 (range 1 10)))
-(println "----------Test2")
+(println (filterMultiplesOfDenom 2 (range 1 10)))
+(println (filterMultiplesOfDenom 3 (range 1 10)))
+(println (filterMultiplesOfDenom 4 (range 1 10)))
+(println (filterMultiplesOfDenom 5 (range 1 10)))
+(println "----------Test2\n")
 
-(defn simple_filtering_vector [keys, numbers]
-  (reduce (fn [acc, x] (filterNums x acc)) numbers keys)
+(defn filterMultiplesOfDenoms [denums, nums]
+  (reduce (fn [acc, num] (filterMultiplesOfDenom num acc)) nums denums)
 )
 
-(println (simple_filtering_vector `(2, 3) (range 1 10)))
+(println "Test3----------")
+(println (filterMultiplesOfDenoms (range 2 3) (range 1 20)))
+(println (filterMultiplesOfDenoms (range 3 4) (range 1 20)))
+(println (filterMultiplesOfDenoms (range 5 7) (range 1 20)))
+(println "----------Test3\n")
 
 (defn extend_acc [from, to, acc]
   (concat 
     acc
-    (simple_filtering_vector acc (range from to))
+    (filterMultiplesOfDenoms acc (range from to))
   )
 )
 
