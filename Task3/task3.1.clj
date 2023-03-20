@@ -66,3 +66,17 @@
 )
 
 (run-tests 'Task.2.1)
+
+(println "No meme")
+(time (integrate fx_x3_5x_3 0 50 0.05))
+(time (integrate fx_x3_5x_3 0 50 0.05))
+(time (integrate fx_x3_5x_3 0 50 0.05))
+(time (integrate fx_x3_5x_3 0 50 0.05))
+(time (integrate fx_x3_5x_3 0 50 0.05))
+
+(println "Meme")
+(time (integrate-meme fx_x3_5x_3 50 100 0.05))
+(time (integrate-meme fx_x3_5x_3 50 100 0.05))
+(time (integrate-meme fx_x3_5x_3 50 100 0.05))
+(time (integrate-meme fx_x3_5x_3 50 100 0.05))
+(time (integrate-meme fx_x3_5x_3 50 100 0.05))
