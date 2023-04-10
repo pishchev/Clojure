@@ -1,88 +1,49 @@
 ; модуль
 (ns integration (:gen-class))
 
-(defn fx_x [x] x)
+(def prec 0.1)
+(defn f_sleep [x] (do (Thread/sleep 1) x))
+(defn fx_x3 [x] (/(* (* x x) x) 3))
 (defn fx_x2 [x] (* x x))
-(defn fx_x3_5x_3 [x] (+ (* x x x) (* 5 x) 3))
 
-(defn trapezoid [f a b]
-    (* (* (+ (f a) (f b)) (- b a)) 0.5)
+(defn trapezoid [f x0 x1]
+  (* (* (+ (f x0) (f x1)) (- x1 x0)) 0.5)
 )
 
-(defn integrate [f a b h]
-    (if (< a b)
-        (+ 
-            (trapezoid f a (+ a h))
-            (integrate f (+ a h) b h)
-        )
-        0 
-    ) 
+(defn calculate_interval [f interval]
+  (trapezoid f (* interval prec) (+ (* interval prec) prec))
 )
 
-(defn parallel-integral [f a b h]
-    (->>(range 0 (/ (- b a) h))
-        (map #(trapezoid  f (+ a (* h %)) (+ a (* h %) h)))
+(defn parallel-integral [f intervals]
+    (->>(range 0 intervals)
+        (map #(calculate_interval  f %)) 
         (doall)
         (apply +)
     )
 )
 
+(defn integrate 
+  ([f]
+    (fn [x0]
+      ( + (parallel-integral f (int (/ x0 prec)))
+          (trapezoid f (* (int (/ x0 prec)) prec) x0)
+      )
+    )
+  )
+)
+
 ; тестирование
 (ns Task.2.1 (:use clojure.test) (:use integration))
+(defn abs [n] (max n (- n)))
+(defn is_close [x0 x1] ( < (abs(- x0 x1)) prec))
+
 (deftest functions-test
-    (testing "Test f(x)=x")
-    (is (= (fx_x 1) 1))
-    (is (= (fx_x 5) 5))
-    (is (= (fx_x 10) 10))
-    (testing "Test f(x)=x^2")
-    (is (= (fx_x2 1) 1))
-    (is (= (fx_x2 2) 4))
-    (is (= (fx_x2 -3) 9))
-    (testing "Test f(x)=x^3+5x+3")
-    (is (= (fx_x3_5x_3 0) 3))
-    (is (= (fx_x3_5x_3 2) 21))
-    (is (= (fx_x3_5x_3 -1) -3))
+  (is (is_close ((integrate fx_x3) 3) 6.7575))
+  (is (is_close ((integrate fx_x2) 5) 41.675))
 )
-
-(deftest trapezoid-test
-    (testing "Trapezoid f(x)=x")
-    (is (= (trapezoid fx_x 0 5) 12.5))
-    (testing "Trapezoid f(x)=x^2")
-    (is (= (trapezoid fx_x2 2 5) 43.5))
-    (testing "Trapezoid f(x)=x^3+5x+3")
-    (is (= (trapezoid fx_x3_5x_3 -2 3) 75.0))
-)
-
-(deftest integration-test
-    (testing "Integration f(x)=x")
-    (is (= (integrate fx_x 0 10 1) 50.0))
-    (testing "Integration f(x)=x^2")
-    (is (= (integrate fx_x2 -1 6 0.5) 72.625))
-    (testing "Integration f(x)=x^3+5x+3")
-    (is (= (integrate fx_x3_5x_3 -3 -1 0.1) -34.02))
-)
-
-(deftest parallel-integral-test
-    (testing "Integration f(x)=x")
-    (is (= (parallel-integral fx_x 0 10 1) 50.0))
-    (testing "Integration f(x)=x^2")
-    (is (= (parallel-integral fx_x2 -1 6 0.5) 72.625))
-    (testing "Integration f(x)=x^3+5x+3")
-    (is (= (parallel-integral fx_x3_5x_3 -3 -1 0.1) -34.02))
-)
-
 (run-tests 'Task.2.1)
 
-(println "No parallel")
-(time (integrate fx_x3_5x_3 0 25 0.05))
-(time (integrate fx_x3_5x_3 -25 0 0.05))
-(time (integrate fx_x3_5x_3 25 50 0.05))
-(time (integrate fx_x3_5x_3 -50 -25 0.05))
-(time (integrate fx_x3_5x_3 -50 50 0.05))
-
-(println "Parallel")
-(time (parallel-integral fx_x3_5x_3 0 25 0.05))
-(time (parallel-integral fx_x3_5x_3 -25 0 0.05))
-(time (parallel-integral fx_x3_5x_3 25 50 0.05))
-(time (parallel-integral fx_x3_5x_3 -50 -25 0.05))
-(time (parallel-integral fx_x3_5x_3 -50 50 0.05))
+(time ((integrate f_sleep) 11.3))
+(time ((integrate f_sleep) 2.1))
+(time ((integrate f_sleep) 20.003))
+(time ((integrate f_sleep) 13.1))
