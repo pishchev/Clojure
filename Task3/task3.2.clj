@@ -6,28 +6,33 @@
 (defn fx_x3 [x] (/(* (* x x) x) 3))
 (defn fx_x2 [x] (* x x))
 
-(defn trapezoid [f x0 x1]
-  (* (* (+ (f x0) (f x1)) (- x1 x0)) 0.5)
+(defn trapezoid [fx0 fx1 step]
+  (* (* (+ fx0 fx1) step) 0.5)
 )
 
-(defn calculate_interval [f interval]
-  (trapezoid f (* interval prec) (+ (* interval prec) prec))
-)
-
-(defn parallel-integral [f intervals]
-    (->>(range 0 intervals)
-        (map #(calculate_interval  f %)) 
-        (doall)
-        (apply +)
-    )
-)
-
-(defn integrate 
-  ([f]
-    (fn [x0]
-      ( + (parallel-integral f (int (/ x0 prec)))
-          (trapezoid f (* (int (/ x0 prec)) prec) x0)
+(defn sum_seq [f]
+  (iterate
+    (fn [[sum fx0 x0]]
+      (let [x1 (+ x0 prec)
+            fx1 (f x1)]
+        (list
+          (+ sum (trapezoid fx0 fx1 prec)) fx1 x1
+        )
       )
+    )
+    (list 0 (f 0) 0)
+  )
+)
+
+(defn integrate [f]
+  (fn [x1]
+    (let [sum_seq_ (sum_seq f)
+          last_block (nth sum_seq_ (int (/ x1 prec)))
+          sum (first last_block)
+          x0 (nth last_block 2)
+          fx0 (nth last_block 1)
+          fx1 (f x1)]
+      (+ sum (trapezoid fx0 fx1 (- x1 x0)))
     )
   )
 )
